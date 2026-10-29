@@ -1,5 +1,5 @@
-package com.sam.bank;
+package com.sam.bank.service;
 
-public class UserService {
+public class AuthService {
     
 }

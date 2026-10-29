@@ -1,5 +1,5 @@
 package com.sam.bank;
 
-public class UserController {
+public class UserService {
     
 }

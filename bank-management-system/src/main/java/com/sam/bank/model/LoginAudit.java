@@ -1,5 +1,5 @@
 package com.sam.bank.model;
 
-public class Transaction {
+public class LoginAudit {
     
 }

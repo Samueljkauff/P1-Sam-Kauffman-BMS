@@ -1,5 +1,5 @@
 package com.sam.bank.service;
 
-public class BankService {
+public class TransactionService {
     
 }

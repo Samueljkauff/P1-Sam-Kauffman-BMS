@@ -1,5 +1,5 @@
 package com.sam.bank.model;
 
-public class Audit {
+public class TransactionType {
     
 }

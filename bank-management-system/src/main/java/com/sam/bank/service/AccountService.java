@@ -1,5 +1,5 @@
 package com.sam.bank.service;
 
-public class AuditService {
+public class AccountService {
     
 }

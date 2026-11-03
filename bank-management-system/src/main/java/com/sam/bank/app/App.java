@@ -1,16 +1,20 @@
 package com.sam.bank.app;
 
+import com.sam.bank.security.SessionManager;
+
 public class App 
 {
     public static void main( String[] args )
     {
-        boolean isLoggedIn = false;
-        System.out.println( "--------- Welcome to BMS --------" );
+        ConsoleInput input = new ConsoleInput();
+        SessionManager session = new SessionManager();
 
-        if(isLoggedIn) {
-            
-        } else {
-            
-        }
+        LoginMenu loginMenu = new LoginMenu(input);
+        CustomerMenu customerMenu = new CustomerMenu(input);
+
+        MainMenu menu = new MainMenu(session, customerMenu, loginMenu);
+
+        menu.loadMenu();
+
     }
 }

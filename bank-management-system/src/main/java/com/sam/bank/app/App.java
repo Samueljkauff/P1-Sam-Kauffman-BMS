@@ -1,9 +1,5 @@
-package com.sam.bank;
+package com.sam.bank.app;
 
-/**
- * Hello world!
- *
- */
 public class App 
 {
     public static void main( String[] args )
@@ -12,7 +8,7 @@ public class App
         System.out.println( "--------- Welcome to BMS --------" );
 
         if(isLoggedIn) {
-
+            
         } else {
             
         }

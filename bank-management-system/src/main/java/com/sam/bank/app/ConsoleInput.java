@@ -1,5 +1,6 @@
 package com.sam.bank.app;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class ConsoleInput {
@@ -9,6 +10,14 @@ public class ConsoleInput {
         this.scan = new Scanner(System.in);
     }
     public int readInt() {
-        return scan.nextInt();
+        while (true) {
+            try {
+                String value = scan.nextLine();
+                return Integer.parseInt(value.trim());
+
+            } catch (NumberFormatException e) {
+                return 0;
+            }
+        }
     }
 }

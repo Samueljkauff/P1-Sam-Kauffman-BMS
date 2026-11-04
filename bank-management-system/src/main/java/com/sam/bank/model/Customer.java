@@ -4,8 +4,7 @@ import java.time.Instant;
 
 public class Customer {
     long customerId;
-    String firstName;
-    String lastName;
+    String fullName;
     String email;
     String phone;
     String userName;
@@ -15,4 +14,13 @@ public class Customer {
     Instant lockedUntil;
     Instant createdAt;
     Instant updatedAt;
+
+    public Customer(String fullName, String email, String phone, String userName, String password) {
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.userName = userName;
+        this.password = password;
+    }
 }
+

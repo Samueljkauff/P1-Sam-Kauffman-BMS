@@ -1,11 +1,15 @@
 package com.sam.bank.util;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 public class AppConfig {
+    private Dotenv dotenv;
     private String URL;
     private String username;
     private String password;
 
     public AppConfig() {
+        this.dotenv = Dotenv.load();
         this.URL = retrieveURL();
         this.username = retrieveUsername();
         this.password = retrievePassword();
@@ -24,7 +28,7 @@ public class AppConfig {
     }
 
     private String retrieveURL() {
-        String url = System.getenv("DB_URL");
+        String url = dotenv.get("DB_URL");
 
         if (url == null || url.isBlank()) {
             throw new IllegalStateException("Missing required environment variable: DB_URL");
@@ -34,7 +38,7 @@ public class AppConfig {
     }
 
     private String retrieveUsername() {
-        String url = System.getenv("DB_USERNAME");
+        String url = dotenv.get("DB_USERNAME");
 
         if (url == null || url.isBlank()) {
             throw new IllegalStateException("Missing required environment variable: DB_URL");
@@ -44,7 +48,7 @@ public class AppConfig {
     }
 
     private String retrievePassword() {
-        String url = System.getenv("DB_PASSWORD");
+        String url = dotenv.get("DB_PASSWORD");
 
         if (url == null || url.isBlank()) {
             throw new IllegalStateException("Missing required environment variable: DB_URL");

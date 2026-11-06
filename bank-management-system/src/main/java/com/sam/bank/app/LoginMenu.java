@@ -1,5 +1,7 @@
 package com.sam.bank.app;
 
+import java.sql.SQLException;
+
 import com.sam.bank.enums.Navigation;
 import com.sam.bank.service.AuthService;
 import com.sam.bank.validation.AccountValidator;
@@ -96,6 +98,11 @@ public class LoginMenu {
             error = 1;
         }
 
-        authService.registerCredentials(firstName, lastName, email, phone, username, password, verifyPassword);
+        try {
+            authService.registerCredentials(firstName, lastName, email, phone, username, password, verifyPassword);
+            System.out.println("Your accoutn has been created! Login to start banking!");
+        } catch(SQLException e) {
+            System.out.println("ERROR: ACCOUNT COULD NOT BE CREATED. RETRY AND VERIFY ALL INFORMATION IS CORRECT AND MATCHES CRITERIAS." + e);
+        }
     }
 }

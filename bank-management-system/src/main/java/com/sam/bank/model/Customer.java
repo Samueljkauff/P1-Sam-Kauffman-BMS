@@ -7,7 +7,7 @@ public class Customer {
     String fullName;
     String email;
     String phone;
-    String userName;
+    String username;
     String password;
     CustomerStatus status;
     int failedLoginCount;
@@ -15,12 +15,32 @@ public class Customer {
     Instant createdAt;
     Instant updatedAt;
 
-    public Customer(String fullName, String email, String phone, String userName, String password) {
+    public Customer(String fullName, String email, String phone, String username, String password) {
         this.fullName = fullName;
         this.email = email;
         this.phone = phone;
-        this.userName = userName;
+        this.username = username;
         this.password = password;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPasswordHash() {
+        return password;
     }
 }
 

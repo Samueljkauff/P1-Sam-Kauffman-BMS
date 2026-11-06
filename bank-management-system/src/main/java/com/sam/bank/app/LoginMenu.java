@@ -2,6 +2,7 @@ package com.sam.bank.app;
 
 import com.sam.bank.enums.Navigation;
 import com.sam.bank.service.AuthService;
+import com.sam.bank.validation.AccountValidator;
 
 public class LoginMenu {
     private ConsoleInput input;
@@ -53,22 +54,47 @@ public class LoginMenu {
     }
 
     private void register() {
-        System.out.println("Register \n");
+        System.out.println("Register");
         System.out.println("Enter each field accordingly. \n");
-        System.out.println("First name: \n");
+
+        System.out.println("First name:");
         String firstName = input.readString();
-        System.out.println("Last name: \n");
+
+        System.out.println("\nLast name:");
         String lastName = input.readString();
-        System.out.println("email: \n");
+
+        System.out.println("\nemail:");
         String email = input.readString();
-        System.out.println("Phone number: \n");
-        String phone = input.readString();
-        System.out.println("Username: \n");
+
+        boolean isValidPhone = false;
+        String phone = "";
+        int error = 0;
+        while(!isValidPhone){
+            String errorMessage = error == 0 ? "" : "\n****ERROR: PHONE NUMBERS MUST BE 10 VALID DIGITS****";
+            System.out.println(errorMessage);
+            System.out.println("Phone number:");
+            phone = input.readString();
+            isValidPhone = AccountValidator.verifyPhone(phone);
+            error = 1;
+        }
+
+        System.out.println("\nUsername:");
         String username = input.readString();
-        System.out.println("Password: \n");
-        String password = input.readPassword();
-        System.out.println("Verify password: \n");
-        String verifyPassword = input.readPassword();
+
+        boolean isValidPassword = false;
+        String password = "";
+        String verifyPassword = "";
+        error = 0;
+        while(!isValidPassword) {
+            String errorMessage = error == 0 ? "\n" : "\n****ERROR: PASSWORDS DONT MATCH****";
+            System.out.println(errorMessage);
+            System.out.println("Password:");
+            password = input.readPassword();
+            System.out.println("\nVerify password:");
+            verifyPassword = input.readPassword();
+            isValidPassword = AccountValidator.verifyPasswordValid(password, verifyPassword);
+            error = 1;
+        }
 
         authService.registerCredentials(firstName, lastName, email, phone, username, password, verifyPassword);
     }

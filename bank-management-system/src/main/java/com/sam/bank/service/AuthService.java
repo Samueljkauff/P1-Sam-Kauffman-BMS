@@ -9,11 +9,10 @@ public class AuthService {
     }
 
     public boolean registerCredentials(String firstName, String lastName, String email, String phone, String username, String password, String verifyPassword) {
-        String fullName = new StringBuilder(firstName).append(lastName).toString();
-        if(password.equals(verifyPassword)) {
-            Customer customer = new Customer(fullName, email, phone, username, password);
-            return true;
-        }
+        String fullName = new StringBuilder(firstName).append(' ').append(lastName).toString();
+        
+        Customer customer = new Customer(fullName, email, phone, username, password);
+
         return false;
     }
 }

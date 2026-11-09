@@ -56,6 +56,7 @@ public class CustomerDAO {
                 
                 Customer customer = new Customer(fullName, email, phone, username, passwordHash);
                 customer.setID(result.getLong("customer_id"));
+                
                 return customer;
     }
 }

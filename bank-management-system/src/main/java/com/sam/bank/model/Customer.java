@@ -3,17 +3,17 @@ package com.sam.bank.model;
 import java.time.Instant;
 
 public class Customer {
-    long customerId;
-    String fullName;
-    String email;
-    String phone;
-    String username;
-    String password;
-    CustomerStatus status;
-    int failedLoginCount;
-    Instant lockedUntil;
-    Instant createdAt;
-    Instant updatedAt;
+    private long customerId;
+    private String fullName;
+    private String email;
+    private String phone;
+    private String username;
+    private String password;
+    private CustomerStatus status;
+    private int failedLoginCount;
+    private Instant lockedUntil;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     public Customer(String fullName, String email, String phone, String username, String password) {
         this.fullName = fullName;

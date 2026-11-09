@@ -1,6 +1,7 @@
 package com.sam.bank.app;
 
 import java.io.Console;
+import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class ConsoleInput {
@@ -19,6 +20,16 @@ public class ConsoleInput {
             } catch (NumberFormatException e) {
                 return 0;
             }
+    }
+
+    public BigDecimal readDecimal() {
+        try {
+            String value = scan.nextLine().trim();
+            return new BigDecimal(value);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid amount. Please enter a valid number.");
+            return readDecimal();
+        }
     }
 
     public String readString() {

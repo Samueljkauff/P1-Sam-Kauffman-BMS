@@ -37,7 +37,12 @@ public class AuthService {
             customerDAO.createCustomer(customer);
             return true;
         } else {
+            System.out.println("Credentials incorrect. Please Try again. \n");
             return false;
         }
+    }
+
+    public void logout() {
+        this.sessionManager.setCurrentSession(null);
     }
 }

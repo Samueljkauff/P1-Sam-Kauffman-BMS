@@ -53,7 +53,9 @@ public class CustomerDAO {
                 String phone = result.getString("phone");
                 String username = result.getString("username");
                 String passwordHash = result.getString("password_hash");
-
-                return new Customer(fullName, email, phone, username, passwordHash);
+                
+                Customer customer = new Customer(fullName, email, phone, username, passwordHash);
+                customer.setID(result.getLong("customer_id"));
+                return customer;
     }
 }

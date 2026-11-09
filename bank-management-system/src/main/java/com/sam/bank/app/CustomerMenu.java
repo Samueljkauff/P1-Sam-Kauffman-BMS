@@ -20,7 +20,7 @@ public class CustomerMenu {
     private Navigation handleInput(int choice) {
         switch (choice) {
             case 1:
-
+                
                 return Navigation.CONTINUE;
             case 2:
 

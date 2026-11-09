@@ -42,5 +42,9 @@ public class Customer {
     public String getPasswordHash() {
         return password;
     }
+
+    public void setID(long id) {
+        this.customerId = id; 
+    }
 }
 

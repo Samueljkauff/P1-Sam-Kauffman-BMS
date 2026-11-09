@@ -10,8 +10,7 @@ public class BCryptPasswordHasher implements PasswordHasher {
     }
 
     @Override
-    public String verifyPassword(String password, String hashedPassword) {
-        // TODO Auto-generated method stub
-        return null;
+    public boolean verifyPassword(String password, String hashedPassword) {
+        return BCrypt.checkpw(password, hashedPassword);
     }
 }

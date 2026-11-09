@@ -1,9 +1,11 @@
 package com.sam.bank.dao;
 
 import com.sam.bank.model.Customer;
+import com.sam.bank.security.BCryptPasswordHasher;
 import com.sam.bank.util.ConnectionFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CustomerDAO {
@@ -26,5 +28,33 @@ public class CustomerDAO {
             statement.executeUpdate();
         }
         return customer;
+    }
+
+    public Customer verifyCredentials(String email1, String password) throws SQLException {
+        String sql = "SELECT * FROM customers WHERE email = ?";
+        Customer customer = null;
+
+        try(Connection connection = this.connectionFactory.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, email1);
+
+            ResultSet result = statement.executeQuery();
+
+            if(result.next()) {
+                customer = mapCustomer(result);
+            } else {
+                System.out.println("ERROR: Credentials incorrect. Please try again.");
+            }
+        }
+        return customer;
+    }
+
+    private Customer mapCustomer(ResultSet result) throws SQLException {
+                String fullName = result.getString("full_name");
+                String email = result.getString("email");
+                String phone = result.getString("phone");
+                String username = result.getString("username");
+                String passwordHash = result.getString("password_hash");
+
+                return new Customer(fullName, email, phone, username, passwordHash);
     }
 }

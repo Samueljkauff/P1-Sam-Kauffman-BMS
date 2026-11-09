@@ -15,8 +15,13 @@ public class AuthService {
         this.passwordHasher = passwordHasher;
     }
 
-    public boolean loginCredentials(String email, String password) {
-        return true;
+    public boolean loginCredentials(String email, String password) throws SQLException {
+        Customer customer = customerDAO.verifyCredentials(email.toLowerCase(), password);
+        if(passwordHasher.verifyPassword(password, customer.getPasswordHash())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean registerCredentials(String firstName, String lastName, String email, String phone, String username, String password, String verifyPassword) throws SQLException {
@@ -24,7 +29,7 @@ public class AuthService {
 
         if(password.equals(verifyPassword)) {
             password = passwordHasher.hashPassword(password);
-            Customer customer = new Customer(fullName, email, phone, username, password);
+            Customer customer = new Customer(fullName.toLowerCase(), email.toLowerCase(), phone, username.toLowerCase(), password);
             customerDAO.createCustomer(customer);
             return true;
         } else {

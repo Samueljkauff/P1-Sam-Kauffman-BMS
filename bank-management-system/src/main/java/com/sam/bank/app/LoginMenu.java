@@ -46,13 +46,16 @@ public class LoginMenu {
         System.out.println("Login \n");
         System.out.println("Enter each field accordingly. \n");
 
-        System.out.println("Email:\n");
+        System.out.println("\nEmail:");
         String email = input.readString();
 
-        System.out.println("Password: \n");
+        System.out.println("\nPassword:");
         String password = input.readPassword();
-
-        authService.loginCredentials(email, password);
+        try {
+            authService.loginCredentials(email, password);
+        } catch(SQLException e) {
+            System.out.println("\nERROR: COULD NOT SIGN IN. TRY AGAIN WITH CORRECT CREDENTIALS. " + e);
+        }
     }
 
     private void register() {
@@ -100,9 +103,9 @@ public class LoginMenu {
 
         try {
             authService.registerCredentials(firstName, lastName, email, phone, username, password, verifyPassword);
-            System.out.println("Your accoutn has been created! Login to start banking!");
+            System.out.println("Your account has been created! Login to start banking!");
         } catch(SQLException e) {
-            System.out.println("ERROR: ACCOUNT COULD NOT BE CREATED. RETRY AND VERIFY ALL INFORMATION IS CORRECT AND MATCHES CRITERIAS." + e);
+            System.out.println("ERROR: ACCOUNT COULD NOT BE CREATED. RETRY AND VERIFY ALL INFORMATION IS CORRECT AND MATCHES CRITERIAS. " + e);
         }
     }
 }

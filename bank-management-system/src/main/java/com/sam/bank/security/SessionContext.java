@@ -7,4 +7,10 @@ public class SessionContext {
     public Customer customer;
     Instant loginTime;
     Instant lastActivityTime;
+
+    public SessionContext() {
+        this.customer = null;
+        this.loginTime = null;
+        this.lastActivityTime = null;
+    }
 }

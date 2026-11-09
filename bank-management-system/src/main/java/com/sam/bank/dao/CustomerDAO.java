@@ -1,7 +1,6 @@
 package com.sam.bank.dao;
 
 import com.sam.bank.model.Customer;
-import com.sam.bank.security.BCryptPasswordHasher;
 import com.sam.bank.util.ConnectionFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

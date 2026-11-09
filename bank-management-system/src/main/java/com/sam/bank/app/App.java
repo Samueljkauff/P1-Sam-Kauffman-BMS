@@ -3,6 +3,7 @@ package com.sam.bank.app;
 import com.sam.bank.dao.CustomerDAO;
 import com.sam.bank.security.BCryptPasswordHasher;
 import com.sam.bank.security.PasswordHasher;
+import com.sam.bank.security.SessionContext;
 import com.sam.bank.security.SessionManager;
 import com.sam.bank.service.AuthService;
 import com.sam.bank.util.AppConfig;
@@ -16,11 +17,10 @@ public class App
         PasswordHasher passwordHasher = new BCryptPasswordHasher();
         ConnectionFactory connection = new ConnectionFactory(app);
 
-        // EVENTUALLY MAKING DAOS WITH CONNECTION
-
-        SessionManager session = new SessionManager();
+        SessionContext currentSession = new SessionContext();
+        SessionManager session = new SessionManager(currentSession);
         CustomerDAO customerDAO = new CustomerDAO(connection);
-        AuthService authService = new AuthService(customerDAO, passwordHasher);
+        AuthService authService = new AuthService(customerDAO, passwordHasher, session);
 
         ConsoleInput input = new ConsoleInput();
         LoginMenu loginMenu = new LoginMenu(input, authService);

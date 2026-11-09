@@ -5,19 +5,23 @@ import java.sql.SQLException;
 import com.sam.bank.dao.CustomerDAO;
 import com.sam.bank.model.Customer;
 import com.sam.bank.security.PasswordHasher;
+import com.sam.bank.security.SessionManager;
 
 public class AuthService {
     public CustomerDAO customerDAO;
     public PasswordHasher passwordHasher;
+    public SessionManager sessionManager;
 
-    public AuthService(CustomerDAO customerDAO, PasswordHasher passwordHasher) {
+    public AuthService(CustomerDAO customerDAO, PasswordHasher passwordHasher, SessionManager sessionManager) {
         this.customerDAO = customerDAO;
         this.passwordHasher = passwordHasher;
+        this.sessionManager = sessionManager;
     }
 
     public boolean loginCredentials(String email, String password) throws SQLException {
         Customer customer = customerDAO.verifyCredentials(email.toLowerCase(), password);
-        if(passwordHasher.verifyPassword(password, customer.getPasswordHash())) {
+        if(customer != null && passwordHasher.verifyPassword(password, customer.getPasswordHash())) {
+            sessionManager.setCurrentSession(customer);
             return true;
         } else {
             return false;

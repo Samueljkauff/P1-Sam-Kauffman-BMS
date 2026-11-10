@@ -14,6 +14,10 @@ public class SessionManager {
 
     }
 
+    public Customer getCurrentCustomer() {
+        return this.currentSession.customer;
+    }
+
     public boolean isLoggedIn() {
         if(currentSession.customer != null) {
             return true;

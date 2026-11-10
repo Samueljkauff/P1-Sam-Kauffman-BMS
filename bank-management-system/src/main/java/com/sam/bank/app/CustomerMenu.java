@@ -1,7 +1,6 @@
 package com.sam.bank.app;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
 
 import com.sam.bank.enums.AccountType;
@@ -109,12 +108,12 @@ public class CustomerMenu {
         switch(type) {
             case SAVINGS:
                 System.out.println("Enter a minimum balance for you savings (round to the nearest dollar):");
-                int minBal = input.readInt();
+                BigDecimal minBal = input.readDecimal();
                 accountService.savingCreation(type, minBal);
                 return true;
             case CURRENT:
                 System.out.println("Enter an overdraft limit (round to the nearest dollar):");
-                int overdraftLimit = input.readInt();
+                BigDecimal overdraftLimit = input.readDecimal();
                 accountService.currentCreation(type, overdraftLimit);
                 return true;
             case DEPOSIT:
@@ -122,7 +121,7 @@ public class CustomerMenu {
                 BigDecimal initAmount = input.readDecimal();
                 LocalDate maturityDate = maturityDates();
                 // THIS WILL BE A LONG LATER
-                Account fundingAccount = chooseFundingAccount();
+                Long fundingAccount = chooseFundingAccount();
                 accountService.depositCreation(type, initAmount, maturityDate, fundingAccount);
                 return true;
             case LOAN:
@@ -158,8 +157,8 @@ public class CustomerMenu {
         }
     }
 
-    public Account chooseFundingAccount() {
+    public Long chooseFundingAccount() {
         // Implement this later (Should list all accounts)
-        return new Account();
+        return null;
     }
 }

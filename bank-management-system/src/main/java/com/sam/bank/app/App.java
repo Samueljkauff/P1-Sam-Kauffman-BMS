@@ -22,11 +22,11 @@ public class App
 
         SessionContext currentSession = new SessionContext();
         SessionManager session = new SessionManager(currentSession);
-        
+
         CustomerDAO customerDAO = new CustomerDAO(connection);
 
         AuthService authService = new AuthService(customerDAO, passwordHasher, session);
-        AccountService accountService = new AccountService(session, input);
+        AccountService accountService = new AccountService(session);
 
         LoginMenu loginMenu = new LoginMenu(input, authService);
         CustomerMenu customerMenu = new CustomerMenu(input, authService, accountService);

@@ -46,5 +46,9 @@ public class Customer {
     public void setID(long id) {
         this.customerId = id; 
     }
+
+    public long getId() {
+        return this.customerId;
+    }
 }
 

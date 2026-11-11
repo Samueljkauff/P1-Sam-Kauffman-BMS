@@ -6,6 +6,10 @@ import java.time.LocalDate;
 
 import com.sam.bank.enums.AccountType;
 import com.sam.bank.model.Account;
+import com.sam.bank.model.CurrentAccount;
+import com.sam.bank.model.DepositAccount;
+import com.sam.bank.model.LoanAccount;
+import com.sam.bank.model.SavingsAccount;
 import com.sam.bank.security.SessionManager;
 
 public class AccountService {
@@ -18,21 +22,26 @@ public class AccountService {
 
     public Account savingCreation(AccountType type, BigDecimal minBal) {
         Account account = createAccount(type, new BigDecimal("0.00"));
+        SavingsAccount savings = new SavingsAccount(minBal);
         return account;
     }
 
     public Account currentCreation(AccountType type, BigDecimal overdraftLimit) {
         Account account = createAccount(type, new BigDecimal("0.00"));
+        CurrentAccount currentAccount = new CurrentAccount(overdraftLimit);
         return account;
     }
 
     public Account depositCreation(AccountType type, BigDecimal initAmount, LocalDate maturity, Long funding) {
         Account account = createAccount(type, initAmount);
+        DepositAccount depositAccount = new DepositAccount(initAmount, maturity, funding);
         return account;
     }
 
     public Account loanCreation(AccountType type, BigDecimal principal) {
         Account account = createAccount(type, principal);
+        // Maybe change this logic
+        LoanAccount loanAccount = new LoanAccount(principal, principal);
         return account;
     }
 

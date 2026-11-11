@@ -4,4 +4,12 @@ import java.math.BigDecimal;
 
 public class CurrentAccount {
     private BigDecimal overdraftLimit;
+
+    public CurrentAccount(BigDecimal overdraftLimit) {
+        this.overdraftLimit = overdraftLimit;
+    }
+
+    public BigDecimal getOverdraftLimit() {
+        return this.overdraftLimit;
+    }
 }

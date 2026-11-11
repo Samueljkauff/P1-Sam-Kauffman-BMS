@@ -6,46 +6,70 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 import com.sam.bank.dao.AccountDAO;
+import com.sam.bank.dao.DepositDAO;
+import com.sam.bank.dao.LoanDAO;
 import com.sam.bank.enums.AccountType;
 import com.sam.bank.model.Account;
 import com.sam.bank.model.DepositAccount;
 import com.sam.bank.model.LoanAccount;
 import com.sam.bank.security.SessionManager;
+import com.sam.bank.util.JdbcTransaction;
 
 public class AccountService {
     private final AccountDAO accountDAO;
+    private final LoanDAO loanDAO;
+    private final DepositDAO depositDAO;
     private final SessionManager session;
+    private final JdbcTransaction transaction;
     private static final SecureRandom secureRandom = new SecureRandom();
 
-    public AccountService(AccountDAO accountDAO, SessionManager session) {
+    public AccountService(AccountDAO accountDAO, LoanDAO loanDAO, DepositDAO depositDAO, SessionManager session, JdbcTransaction transaction) {
         this.accountDAO = accountDAO;
+        this.loanDAO = loanDAO;
+        this.depositDAO = depositDAO;
         this.session = session;
+        this.transaction = transaction;
     }
 
-    public Account savingCreation(AccountType type, BigDecimal minBal) throws SQLException {
-        Account account = createAccount(type, BigDecimal.ZERO, minBal, BigDecimal.ZERO);
+    public Account savingCreation(BigDecimal initAmount, BigDecimal minBal) throws SQLException {
+        AccountType type = AccountType.SAVINGS;
+        Account account = createAccount(type, initAmount, minBal, BigDecimal.ZERO);
         accountDAO.createAccount(account);
         return account;
     }
 
-    public Account currentCreation(AccountType type, BigDecimal overdraftLimit) throws SQLException {
-        Account account = createAccount(type, BigDecimal.ZERO, BigDecimal.ZERO, overdraftLimit);
+    public Account currentCreation(BigDecimal initAmount, BigDecimal overdraftLimit) throws SQLException {
+        AccountType type = AccountType.CURRENT;
+        Account account = createAccount(type, initAmount, BigDecimal.ZERO, overdraftLimit);
         accountDAO.createAccount(account);
         return account;
     }
 
-    public Account depositCreation(AccountType type, BigDecimal initAmount, LocalDate maturity, Long funding) throws SQLException {
+    public Account depositCreation(BigDecimal initAmount, int termMonths, LocalDate maturity, Long funding) throws SQLException {
+        AccountType type = AccountType.DEPOSIT;
         Account account = createAccount(type, initAmount, BigDecimal.ZERO, BigDecimal.ZERO);
-        accountDAO.createAccount(account);
-        DepositAccount depositAccount = new DepositAccount(initAmount, maturity, funding);
+        BigDecimal interestRate = new BigDecimal("0.045");
+        DepositAccount depositAccount = new DepositAccount(initAmount, termMonths, interestRate, maturity, funding);
+        transaction.execute(connection -> {
+            accountDAO.createAccount(connection, account);
+            depositAccount.setAccountId(account.getAccountId());
+            depositDAO.createDepositDetails(connection, depositAccount);
+        });
         return account;
     }
 
-    public Account loanCreation(AccountType type, BigDecimal principal) throws SQLException {
+    public Account loanCreation(BigDecimal principal) throws SQLException {
+        AccountType type = AccountType.LOAN;
         Account account = createAccount(type, principal, BigDecimal.ZERO, BigDecimal.ZERO);
-        // Maybe change this logic
-        LoanAccount loanAccount = new LoanAccount(principal, principal);
-        accountDAO.createAccount(account);
+        BigDecimal interestRate = new BigDecimal("0.045");
+        LocalDate startDate = LocalDate.now(); 
+        int tenureMonths = 36;
+        LoanAccount loanAccount = new LoanAccount(principal, interestRate,  tenureMonths, startDate);
+        transaction.execute(connection -> {
+            accountDAO.createAccount(connection, account);
+            loanAccount.setAccountId(account.getAccountId());
+            loanDAO.createLoanDetails(connection, loanAccount);
+        });
         return account;
     }
 

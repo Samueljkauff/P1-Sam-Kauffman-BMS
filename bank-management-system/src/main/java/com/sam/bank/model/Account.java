@@ -49,4 +49,12 @@ public class Account {
     public BigDecimal getOverdraftLimit() {
         return this.overdraftLimit;
     }
+
+    public void setAccountId(long accountId) {
+        this.accountId = accountId;
+    }
+
+    public long getAccountId() {
+        return this.accountId;
+    }
 }       

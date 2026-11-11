@@ -105,12 +105,14 @@ public class CustomerMenu {
     public boolean accountCreationFlow(AccountType type) {
 
 
+        BigDecimal initAmount = BigDecimal.ZERO;
         switch(type) {
             case SAVINGS:
                 System.out.println("Enter a minimum balance for you savings (round to the nearest dollar):");
                 BigDecimal minBal = input.readDecimal();
+                initAmount = initialDeposit();
                 try {
-                    accountService.savingCreation(type, minBal);
+                    accountService.savingCreation(initAmount, minBal);
                 } catch(SQLException e) {
                     System.out.println("Something Went wrong. Please Try again.");
                 }
@@ -118,20 +120,21 @@ public class CustomerMenu {
             case CURRENT:
                 System.out.println("Enter an overdraft limit (round to the nearest dollar):");
                 BigDecimal overdraftLimit = input.readDecimal();
+                initAmount = initialDeposit();
                 try {
-                    accountService.currentCreation(type, overdraftLimit);
+                    accountService.currentCreation(initAmount, overdraftLimit);
                 } catch(SQLException e) {
                     System.out.println("Something Went wrong. Please Try again.");
                 }
                 return true;
             case DEPOSIT:
-                System.out.println("Deposit an initial amount:");
-                BigDecimal initAmount = input.readDecimal();
-                LocalDate maturityDate = maturityDates();
+                int termMonths = maturityMonths();
+                LocalDate maturityDate = LocalDate.now().plusMonths(termMonths);
                 // THIS WILL BE A LONG LATER
+                initAmount = initialDeposit();
                 Long fundingAccount = chooseFundingAccount();
                 try {
-                    accountService.depositCreation(type, initAmount, maturityDate, fundingAccount);
+                    accountService.depositCreation(initAmount, termMonths, maturityDate, fundingAccount);
                 } catch(SQLException e) {
                     System.out.println("Something Went wrong. Please Try again.");
                 }
@@ -140,7 +143,7 @@ public class CustomerMenu {
                 System.out.println("How much money would you like to borrow: \n");
                 BigDecimal principal = input.readDecimal();
                 try {
-                    accountService.loanCreation(type, principal);
+                    accountService.loanCreation(principal);
                 } catch(SQLException e) {
                     System.out.println("Something Went wrong. Please Try again.");
                 }
@@ -151,26 +154,27 @@ public class CustomerMenu {
         }
     }
 
-    public LocalDate maturityDates() {
+    public int maturityMonths() {
         System.out.println("Select a maturity date: \n 1. 3 month \n2. 6 months \n3. 12 months");
         int choice = input.readInt();
 
-        LocalDate maturityDate;
         while(true) {
             switch (choice) {
                 case 1:
-                    maturityDate = LocalDate.now().plusMonths(3);
-                    return maturityDate;
+                    return 3;
                 case 2:
-                    maturityDate = LocalDate.now().plusMonths(6);
-                    return maturityDate;
+                    return 6;
                 case 3:
-                    maturityDate = LocalDate.now().plusMonths(12);
-                    return maturityDate;
+                    return 12;
                 default:
                     System.out.println("\nEnter a valid selection");
             }
         }
+    }
+
+    public BigDecimal initialDeposit() {
+        System.out.println("Deposit an initial amount:");
+        return input.readDecimal();
     }
 
     public Long chooseFundingAccount() {

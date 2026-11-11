@@ -1,21 +1,50 @@
+
 package com.sam.bank.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class LoanAccount {
-    private BigDecimal principal;
-    private BigDecimal outstandingBalance;
 
-    public LoanAccount(BigDecimal principal, BigDecimal outstandingBalance) {
-        this.principal = principal;
-        this.outstandingBalance = outstandingBalance;
+    private long accountId;
+    private BigDecimal principalAmount;
+    private BigDecimal annualRate;
+    private int tenureMonths;
+    private LocalDate startDate;
+
+    public LoanAccount(
+            BigDecimal principalAmount,
+            BigDecimal annualRate,
+            int tenureMonths,
+            LocalDate startDate
+    ) {
+        this.principalAmount = principalAmount;
+        this.annualRate = annualRate;
+        this.tenureMonths = tenureMonths;
+        this.startDate = startDate;
     }
 
-    public BigDecimal getPincipal() {
-        return this.principal;
+    public long getAccountId() {
+        return accountId;
     }
 
-    public BigDecimal getOutstandingBalance() {
-        return this.outstandingBalance;
+    public void setAccountId(long accountId) {
+        this.accountId = accountId;
+    }
+
+    public BigDecimal getPrincipalAmount() {
+        return principalAmount;
+    }
+
+    public BigDecimal getAnnualRate() {
+        return annualRate;
+    }
+
+    public int getTenureMonths() {
+        return tenureMonths;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
     }
 }

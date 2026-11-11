@@ -1,5 +1,6 @@
 package com.sam.bank.app;
 
+import com.sam.bank.dao.AccountDAO;
 import com.sam.bank.dao.CustomerDAO;
 import com.sam.bank.security.BCryptPasswordHasher;
 import com.sam.bank.security.PasswordHasher;
@@ -24,6 +25,7 @@ public class App
         SessionManager session = new SessionManager(currentSession);
 
         CustomerDAO customerDAO = new CustomerDAO(connection);
+        AccountDAO accountDOA = new AccountDAO(connection);
 
         AuthService authService = new AuthService(customerDAO, passwordHasher, session);
         AccountService accountService = new AccountService(session);

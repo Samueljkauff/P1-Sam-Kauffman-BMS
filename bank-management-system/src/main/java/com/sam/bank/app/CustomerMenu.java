@@ -5,7 +5,6 @@ import java.time.LocalDate;
 
 import com.sam.bank.enums.AccountType;
 import com.sam.bank.enums.Navigation;
-import com.sam.bank.model.Account;
 import com.sam.bank.service.AccountService;
 import com.sam.bank.service.AuthService;
 

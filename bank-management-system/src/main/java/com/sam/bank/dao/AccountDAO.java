@@ -15,7 +15,7 @@ public class AccountDAO {
     }
 
     public Account createAccount(Account account) throws SQLException {
-        String sql = "INSERT INTO account ( customer_id, account_number, account_type, balance, minimum_balance, overdraft_limit ) VALUES ( ?, ?, ?, ?, ?, ? )";
+        String sql = "INSERT INTO accounts ( customer_id, account_number, account_type, balance, minimum_balance, overdraft_limit ) VALUES ( ?, ?, ?, ?, ?, ? )";
 
         try(Connection connection = connectionFactory.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, account.getCustomerId());

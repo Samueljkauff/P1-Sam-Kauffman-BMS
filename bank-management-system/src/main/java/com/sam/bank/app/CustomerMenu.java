@@ -1,6 +1,7 @@
 package com.sam.bank.app;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 import com.sam.bank.enums.AccountType;
@@ -108,12 +109,20 @@ public class CustomerMenu {
             case SAVINGS:
                 System.out.println("Enter a minimum balance for you savings (round to the nearest dollar):");
                 BigDecimal minBal = input.readDecimal();
-                accountService.savingCreation(type, minBal);
+                try {
+                    accountService.savingCreation(type, minBal);
+                } catch(SQLException e) {
+                    System.out.println("Something Went wrong. Please Try again.");
+                }
                 return true;
             case CURRENT:
                 System.out.println("Enter an overdraft limit (round to the nearest dollar):");
                 BigDecimal overdraftLimit = input.readDecimal();
-                accountService.currentCreation(type, overdraftLimit);
+                try {
+                    accountService.currentCreation(type, overdraftLimit);
+                } catch(SQLException e) {
+                    System.out.println("Something Went wrong. Please Try again.");
+                }
                 return true;
             case DEPOSIT:
                 System.out.println("Deposit an initial amount:");
@@ -121,12 +130,20 @@ public class CustomerMenu {
                 LocalDate maturityDate = maturityDates();
                 // THIS WILL BE A LONG LATER
                 Long fundingAccount = chooseFundingAccount();
-                accountService.depositCreation(type, initAmount, maturityDate, fundingAccount);
+                try {
+                    accountService.depositCreation(type, initAmount, maturityDate, fundingAccount);
+                } catch(SQLException e) {
+                    System.out.println("Something Went wrong. Please Try again.");
+                }
                 return true;
             case LOAN:
                 System.out.println("How much money would you like to borrow: \n");
                 BigDecimal principal = input.readDecimal();
-                accountService.loanCreation(type, principal);
+                try {
+                    accountService.loanCreation(type, principal);
+                } catch(SQLException e) {
+                    System.out.println("Something Went wrong. Please Try again.");
+                }
                 return true;
             default:
                 System.out.println("ERROR: something went wrong");

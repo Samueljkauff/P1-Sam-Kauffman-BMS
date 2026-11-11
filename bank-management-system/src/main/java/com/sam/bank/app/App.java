@@ -25,10 +25,10 @@ public class App
         SessionManager session = new SessionManager(currentSession);
 
         CustomerDAO customerDAO = new CustomerDAO(connection);
-        AccountDAO accountDOA = new AccountDAO(connection);
+        AccountDAO accountDAO = new AccountDAO(connection);
 
         AuthService authService = new AuthService(customerDAO, passwordHasher, session);
-        AccountService accountService = new AccountService(session);
+        AccountService accountService = new AccountService(accountDAO, session);
 
         LoginMenu loginMenu = new LoginMenu(input, authService);
         CustomerMenu customerMenu = new CustomerMenu(input, authService, accountService);

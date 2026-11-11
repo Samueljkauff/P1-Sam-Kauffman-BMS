@@ -108,21 +108,23 @@ public class CustomerMenu {
         BigDecimal initAmount = BigDecimal.ZERO;
         switch(type) {
             case SAVINGS:
-                System.out.println("Enter a minimum balance for you savings (round to the nearest dollar):");
+                System.out.println("Enter a minimum balance for you savings:");
                 BigDecimal minBal = input.readDecimal();
                 initAmount = initialDeposit();
                 try {
                     accountService.savingCreation(initAmount, minBal);
+                    System.out.println("Account successfully created!");
                 } catch(SQLException e) {
                     System.out.println("Something Went wrong. Please Try again.");
                 }
                 return true;
             case CURRENT:
-                System.out.println("Enter an overdraft limit (round to the nearest dollar):");
+                System.out.println("Enter an overdraft limit:");
                 BigDecimal overdraftLimit = input.readDecimal();
                 initAmount = initialDeposit();
                 try {
                     accountService.currentCreation(initAmount, overdraftLimit);
+                    System.out.println("Account successfully created!");
                 } catch(SQLException e) {
                     System.out.println("Something Went wrong. Please Try again.");
                 }
@@ -130,20 +132,21 @@ public class CustomerMenu {
             case DEPOSIT:
                 int termMonths = maturityMonths();
                 LocalDate maturityDate = LocalDate.now().plusMonths(termMonths);
-                // THIS WILL BE A LONG LATER
                 initAmount = initialDeposit();
-                Long fundingAccount = chooseFundingAccount();
+                Long fundingAccount = chooseFundingAccount(); //FINISH THIS FUNCTION
                 try {
                     accountService.depositCreation(initAmount, termMonths, maturityDate, fundingAccount);
+                    System.out.println("Account successfully created!");
                 } catch(SQLException e) {
                     System.out.println("Something Went wrong. Please Try again.");
                 }
                 return true;
             case LOAN:
-                System.out.println("How much money would you like to borrow: \n");
+                System.out.println("\nHow much money would you like to borrow:");
                 BigDecimal principal = input.readDecimal();
                 try {
                     accountService.loanCreation(principal);
+                    System.out.println("Account successfully created!");
                 } catch(SQLException e) {
                     System.out.println("Something Went wrong. Please Try again.");
                 }

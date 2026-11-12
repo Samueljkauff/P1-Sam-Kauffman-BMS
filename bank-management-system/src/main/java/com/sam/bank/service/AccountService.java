@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 
 import com.sam.bank.dao.AccountDAO;
 import com.sam.bank.dao.DepositDAO;
@@ -54,6 +55,7 @@ public class AccountService {
             accountDAO.createAccount(connection, account);
             depositAccount.setAccountId(account.getAccountId());
             depositDAO.createDepositDetails(connection, depositAccount);
+            // FUNDING LOGIC HERE
         });
         return account;
     }
@@ -78,6 +80,12 @@ public class AccountService {
         String accountNumber = generateAccountNumber();
         Account account = new Account(customerId, accountNumber, type, balance, minimumBalance, overdraftLimit);
         return account;
+    }
+
+    public List<Account> getAllAccounts() throws SQLException {
+        long id = session.getCurrentCustomer().getId();
+
+        return accountDAO.getAllAccounts(id);
     }
 
     private String generateAccountNumber() {

@@ -1,10 +1,14 @@
 package com.sam.bank.dao;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.sam.bank.enums.AccountType;
 import com.sam.bank.model.Account;
 import com.sam.bank.util.ConnectionFactory;
 
@@ -51,4 +55,33 @@ public class AccountDAO {
 
         return account;
     }
+
+    public List<Account> getAllAccounts(long id) throws SQLException {
+        List<Account> accountList = new ArrayList<>();
+        String sql = "SELECT account_id, account_number, account_type, balance, minimum_balance, overdraft_limit FROM accounts WHERE customer_id = ? AND status = 'ACTIVE' AND account_type IN ('SAVINGS', 'CURRENT')";
+
+        try(Connection connection = connectionFactory.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, id);
+
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    Account account = mapAccount(result);
+                    accountList.add(account);
+                }
+            }
+        }
+
+        return accountList;
+    }
+
+    public Account mapAccount(ResultSet result) throws SQLException {
+        long accountId = result.getLong("account_id");
+        String accountNumber = result.getString("account_number");
+        String accountType = result.getString("account_type");
+        BigDecimal balance = result.getBigDecimal("balance");
+        BigDecimal minimumBalance = result.getBigDecimal("minimum_balance");
+        BigDecimal overdraftLimit = result.getBigDecimal("overdraft_limit");
+
+        return new Account(accountId, accountNumber, AccountType.valueOf(accountType), balance, minimumBalance, overdraftLimit);
+    }   
 }

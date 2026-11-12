@@ -3,11 +3,14 @@ package com.sam.bank.app;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 
 import com.sam.bank.enums.AccountType;
 import com.sam.bank.enums.Navigation;
 import com.sam.bank.service.AccountService;
 import com.sam.bank.service.AuthService;
+
+import com.sam.bank.model.Account;
 
 public class CustomerMenu {
     private ConsoleInput input;
@@ -133,7 +136,7 @@ public class CustomerMenu {
                 int termMonths = maturityMonths();
                 LocalDate maturityDate = LocalDate.now().plusMonths(termMonths);
                 initAmount = initialDeposit();
-                Long fundingAccount = chooseFundingAccount(); //FINISH THIS FUNCTION
+                Long fundingAccount = chooseFundingAccount();
                 try {
                     accountService.depositCreation(initAmount, termMonths, maturityDate, fundingAccount);
                     System.out.println("Account successfully created!");
@@ -158,7 +161,7 @@ public class CustomerMenu {
     }
 
     public int maturityMonths() {
-        System.out.println("Select a maturity date: \n 1. 3 month \n2. 6 months \n3. 12 months");
+        System.out.println("Select a maturity date: \n1. 3 month \n2. 6 months \n3. 12 months");
         int choice = input.readInt();
 
         while(true) {
@@ -181,7 +184,44 @@ public class CustomerMenu {
     }
 
     public Long chooseFundingAccount() {
-        // Implement this later (Should list all accounts)
-        return null;
+        int count = 1;
+        int choice;
+        try {
+            List<Account> accounts = accountService.getAllAccounts();
+            System.out.println("--------------- Accounts ---------------");
+            if (accounts.isEmpty()) {
+                System.out.println("You have no eligible funding accounts.");
+                loadMenu();
+                return null;
+            }
+            for(Account account: accounts) {
+                System.out.println("| " + count + " | " + account.getAccountNumber() + " | " + account.getAccountType() + " | " + account.getBalance() + " |");
+
+                count++;
+            }
+            
+            if(accounts.size() > 1) {
+                System.out.println("Which account would you like to fund you deposit with? 1-" + accounts.size());
+            } else {
+                System.out.println("Which account would you like to fund you deposit with?");
+            }
+
+            while (true) {
+                choice = input.readInt();
+
+                if (choice >= 1 && choice <= accounts.size()) {
+                    break;
+                }
+
+                System.out.println("Invalid selection. Choose between 1 and " + accounts.size());
+            }
+
+            return Long.valueOf(choice);
+
+        } catch (SQLException e) {
+            System.out.println("Unable to retrieve your accounts. Please try again.");
+            loadMenu();
+            return null;
+        }
     }
 }

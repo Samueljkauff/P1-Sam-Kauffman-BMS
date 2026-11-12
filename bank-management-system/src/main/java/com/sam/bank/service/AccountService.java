@@ -46,18 +46,30 @@ public class AccountService {
         return account;
     }
 
-    public Account depositCreation(BigDecimal initAmount, int termMonths, LocalDate maturity, Long funding) throws SQLException {
+    public Account depositCreation(BigDecimal initAmount, int termMonths, LocalDate maturity, Account funding) throws SQLException {
         AccountType type = AccountType.DEPOSIT;
         Account account = createAccount(type, initAmount, BigDecimal.ZERO, BigDecimal.ZERO);
         BigDecimal interestRate = new BigDecimal("0.045");
-        DepositAccount depositAccount = new DepositAccount(initAmount, termMonths, interestRate, maturity, funding);
-        transaction.execute(connection -> {
-            accountDAO.createAccount(connection, account);
-            depositAccount.setAccountId(account.getAccountId());
-            depositDAO.createDepositDetails(connection, depositAccount);
-            // FUNDING LOGIC HERE
-        });
-        return account;
+
+        long fundingId = funding.getAccountId();
+        BigDecimal newBalance = funding.getBalance().subtract(initAmount);
+
+        if(newBalance.compareTo(BigDecimal.ZERO) >= 0 && newBalance.compareTo(funding.getMinimumBalance()) >= 0 && newBalance.compareTo(funding.getOverdraftLimit().negate()) >= 0) {
+            DepositAccount depositAccount = new DepositAccount(initAmount, termMonths, interestRate, maturity, fundingId);
+
+            transaction.execute(connection -> {
+                accountDAO.createAccount(connection, account);
+                depositAccount.setAccountId(account.getAccountId());
+                depositDAO.createDepositDetails(connection, depositAccount);
+                accountDAO.updateBalance(connection, fundingId, newBalance);
+            });
+            System.out.println("Funds taken from account: #" + fundingId);
+            System.out.println("New balance: " + newBalance);
+            return account;
+        } else {
+            System.out.println("insufficient Funds.");
+            return null;
+        }
     }
 
     public Account loanCreation(BigDecimal principal) throws SQLException {
@@ -82,10 +94,10 @@ public class AccountService {
         return account;
     }
 
-    public List<Account> getAllAccounts() throws SQLException {
+    public List<Account> getAllAccounts(boolean includeDeposit, boolean isLoan) throws SQLException {
         long id = session.getCurrentCustomer().getId();
 
-        return accountDAO.getAllAccounts(id);
+        return accountDAO.getAllAccounts(id, includeDeposit, isLoan);
     }
 
     private String generateAccountNumber() {

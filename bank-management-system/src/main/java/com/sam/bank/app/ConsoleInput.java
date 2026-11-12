@@ -13,22 +13,24 @@ public class ConsoleInput {
         this.hiddenScan = System.console();
     }
     public int readInt() {
+        while (true) {
             try {
-                String value = scan.nextLine();
-                return Integer.parseInt(value.trim());
-
+                String value = scan.nextLine().trim();
+                return Integer.parseInt(value);
             } catch (NumberFormatException e) {
-                return 0;
+                System.out.println("Invalid input. Please enter a whole number.");
             }
+        }
     }
 
     public BigDecimal readDecimal() {
-        try {
-            String value = scan.nextLine().trim();
-            return new BigDecimal(value);
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid amount. Please enter a valid number.");
-            return readDecimal();
+        while (true) {
+            try {
+                String value = scan.nextLine().trim();
+                return new BigDecimal(value);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid amount. Please enter a valid number.");
+            }
         }
     }
 

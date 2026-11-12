@@ -21,6 +21,7 @@ public class JdbcTransaction {
             } catch(SQLException e) {
                 System.out.println(e);
                 connection.rollback();
+                throw e;
             }
         }
     }

@@ -55,6 +55,7 @@ public class Account {
     }
 
     public long getAccountId() {
+        System.out.println(this.accountId);
         return this.accountId;
     }
 }       

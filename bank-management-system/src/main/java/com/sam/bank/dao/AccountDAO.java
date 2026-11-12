@@ -48,7 +48,6 @@ public class AccountDAO {
                     account.setAccountId(accountId);
                 } else {
                     throw new SQLException("Account creation failed: no ID returned.");
- 
                 }
             }
         }
@@ -56,9 +55,21 @@ public class AccountDAO {
         return account;
     }
 
-    public List<Account> getAllAccounts(long id) throws SQLException {
+    public List<Account> getAllAccounts(long id, boolean depositIncluded, boolean isLoan) throws SQLException {
+        String accountTypes;
         List<Account> accountList = new ArrayList<>();
-        String sql = "SELECT account_id, account_number, account_type, balance, minimum_balance, overdraft_limit FROM accounts WHERE customer_id = ? AND status = 'ACTIVE' AND account_type IN ('SAVINGS', 'CURRENT')";
+        
+        if (isLoan) {
+            accountTypes = "'LOAN'";
+        } else if (depositIncluded) {
+            accountTypes = "'SAVINGS', 'CURRENT', 'DEPOSIT'";
+        } else {
+            accountTypes = "'SAVINGS', 'CURRENT'";
+        }
+
+        String sql = "SELECT account_id, customer_id, account_number, account_type, balance, minimum_balance, overdraft_limit "
+                + "FROM accounts WHERE customer_id = ? AND status = 'ACTIVE' "
+                + "AND account_type IN (" + accountTypes + ")";
 
         try(Connection connection = connectionFactory.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
@@ -74,14 +85,33 @@ public class AccountDAO {
         return accountList;
     }
 
+    public void updateBalance(Connection connection, long accountId, BigDecimal newBalance) throws SQLException {
+        String sql = "UPDATE accounts SET balance = ? WHERE account_id = ?";
+
+        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setBigDecimal(1, newBalance);
+            statement.setLong(2, accountId);
+
+            int rowsUpdated = statement.executeUpdate();
+
+            if (rowsUpdated == 0) {
+                throw new SQLException("Account not found.");
+            }
+        }
+    }
+
     public Account mapAccount(ResultSet result) throws SQLException {
         long accountId = result.getLong("account_id");
+        long customerId = result.getLong("customer_id");
         String accountNumber = result.getString("account_number");
         String accountType = result.getString("account_type");
         BigDecimal balance = result.getBigDecimal("balance");
         BigDecimal minimumBalance = result.getBigDecimal("minimum_balance");
         BigDecimal overdraftLimit = result.getBigDecimal("overdraft_limit");
 
-        return new Account(accountId, accountNumber, AccountType.valueOf(accountType), balance, minimumBalance, overdraftLimit);
+        Account account = new Account(customerId, accountNumber, AccountType.valueOf(accountType), balance, minimumBalance, overdraftLimit);
+        account.setAccountId(accountId);
+
+        return account;
     }   
 }

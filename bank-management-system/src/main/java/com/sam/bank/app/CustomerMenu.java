@@ -50,8 +50,8 @@ public class CustomerMenu {
 
     public Navigation loadMenu() {
         System.out.println("Enter the following selections to continue.");
-        System.out.println(" 1. Deposit\n 2. Withdrawal \n 3. Transfer \n 4. View Accounts \n 5. Repay Loan \n 6. Create Account \n 7. History \n 8. Profile \n 9. Logout \n 10. Quit");
-
+        System.out.println(" 1. Deposit\n 2. Withdrawal \n 3. Transfer \n 4. View Accounts \n 5. Repay Loan \n 6. Create Account \n 7. History \n 8. Profile \n 9. Logout \n 10. Quit\n");
+        System.out.print("Choice: ");
         int choice = input.readInt();
         return handleInput(choice);
     }
@@ -71,7 +71,7 @@ public class CustomerMenu {
                 String isDone;
                 do {
                     listAccounts(true, false);
-                    System.out.println("press q to go back");
+                    System.out.println("\nEnter q to go back");
                     isDone = input.readString();
                 } while(!isDone.equals("q"));
 
@@ -149,7 +149,8 @@ public class CustomerMenu {
             System.out.println("2. Current");
             System.out.println("3. Deposit");
             System.out.println("4. Loan");
-            System.out.println("5. Cancel");
+            System.out.println("5. Cancel\n");
+            System.out.print("Choice: ");
 
             int choice = input.readInt();
 
@@ -275,12 +276,13 @@ public class CustomerMenu {
         List<Account> accounts = listAccounts(false, false);
             
             if(accounts.size() > 1) {
-                System.out.println(prompt + " 1-" + accounts.size());
+                System.out.println(prompt + " 1-" + accounts.size() + "\n");
             } else {
-                System.out.println(prompt);
+                System.out.println(prompt + "/n");
             }
 
             while (true) {
+                System.out.print("Choice: ");
                 choice = input.readInt();
 
                 if (choice >= 1 && choice <= accounts.size()) {

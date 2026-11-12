@@ -63,7 +63,7 @@ public class AccountService {
                 depositDAO.createDepositDetails(connection, depositAccount);
                 accountDAO.updateBalance(connection, fundingId, newBalance);
             });
-            System.out.println("Funds taken from account: #" + fundingId);
+            System.out.println("Funds taken from account: #" + account.getAccountNumber());
             System.out.println("New balance: " + newBalance);
             return account;
         } else {

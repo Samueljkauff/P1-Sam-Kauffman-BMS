@@ -30,7 +30,7 @@ public class TransactionService {
 
         jdbcTransaction.execute(connection -> {
             accountDAO.updateBalance(connection, accountId, newBalance);
-            System.out.println("Successfully updated amount of account: #" + accountId + " to " + newBalance);
+            System.out.println("Successfully updated amount of account: #" + account.getAccountNumber() + " to " + newBalance);
         });
     }
 
@@ -50,7 +50,7 @@ public class TransactionService {
         
         jdbcTransaction.execute(connection -> {
             accountDAO.updateBalance(connection, accountId, newBalance);
-            System.out.println("Successfully updated amount of account: #" + accountId + " to " + newBalance);
+            System.out.println("Successfully updated amount of account: #" + account.getAccountNumber() + " to " + newBalance);
         });
     }
 

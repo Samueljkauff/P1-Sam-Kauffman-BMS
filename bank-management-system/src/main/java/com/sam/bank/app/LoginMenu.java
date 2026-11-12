@@ -17,8 +17,8 @@ public class LoginMenu {
 
     public Navigation loadMenu() {
         System.out.println("Welcome to BMS. Enter one of the following selections to continue.");
-        System.out.println(" 1. Login\n 2. Register\n 3. Quit");
-
+        System.out.println(" 1. Login\n 2. Register\n 3. Quit\n");
+        System.out.print("Choice: ");
         int choice = input.readInt();
         Navigation navType = handleInput(choice);
         return navType;
@@ -46,10 +46,10 @@ public class LoginMenu {
         System.out.println("Login \n");
         System.out.println("Enter each field accordingly. \n");
 
-        System.out.println("\nEmail:");
+        System.out.print("\nEmail: ");
         String email = input.readString();
 
-        System.out.println("\nPassword:");
+        System.out.print("\nPassword: ");
         String password = input.readPassword();
         try {
             authService.loginCredentials(email, password);
@@ -62,28 +62,28 @@ public class LoginMenu {
         System.out.println("Register");
         System.out.println("Enter each field accordingly. \n");
 
-        System.out.println("First name:");
+        System.out.print("First name: ");
         String firstName = input.readString();
 
-        System.out.println("\nLast name:");
+        System.out.print("\nLast name: ");
         String lastName = input.readString();
 
-        System.out.println("\nemail:");
+        System.out.print("\nemail: ");
         String email = input.readString();
 
         boolean isValidPhone = false;
         String phone = "";
         int error = 0;
         while(!isValidPhone){
-            String errorMessage = error == 0 ? "" : "\n****ERROR: PHONE NUMBERS MUST BE 10 VALID DIGITS****";
+            String errorMessage = error == 0 ? "" : "\nERROR: PHONE NUMBERS MUST BE 10 VALID DIGITS";
             System.out.println(errorMessage);
-            System.out.println("Phone number:");
+            System.out.print("Phone number: ");
             phone = input.readString();
             isValidPhone = AccountValidator.verifyPhone(phone);
             error = 1;
         }
 
-        System.out.println("\nUsername:");
+        System.out.print("\nUsername:");
         String username = input.readString();
 
         boolean isValidPassword = false;
@@ -91,11 +91,11 @@ public class LoginMenu {
         String verifyPassword = "";
         error = 0;
         while(!isValidPassword) {
-            String errorMessage = error == 0 ? "\n" : "\n****ERROR: PASSWORDS DONT MATCH****";
+            String errorMessage = error == 0 ? "\n" : "\nERROR: PASSWORDS DONT MATCH";
             System.out.println(errorMessage);
-            System.out.println("Password:");
+            System.out.print("Password: ");
             password = input.readPassword();
-            System.out.println("\nVerify password:");
+            System.out.print("\nVerify password: ");
             verifyPassword = input.readPassword();
             isValidPassword = AccountValidator.verifyPasswordValid(password, verifyPassword);
             error = 1;

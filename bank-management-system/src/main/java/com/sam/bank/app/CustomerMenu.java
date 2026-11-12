@@ -25,6 +25,29 @@ public class CustomerMenu {
         this.transactionService = transactionService;
     }
 
+    public Navigation loadInitMenu() {
+        System.out.println("Create your first account today!.");
+        System.out.println("1. Current \n2. Savings \n3. Quit");
+
+        int choice = input.readInt();
+
+        switch (choice) {
+            case 1:
+                accountCreationFlow(AccountType.CURRENT);
+                return Navigation.CONTINUE;
+            case 2:
+                accountCreationFlow(AccountType.SAVINGS);
+                return Navigation.CONTINUE;
+            case 3:
+                System.out.println("Goodbye Now");
+                return Navigation.QUIT;
+            default:
+                System.out.println("Invalid Choice!!! Input must be a number 1-3.\n");
+                loadInitMenu();
+                return Navigation.CONTINUE;
+        }
+    }
+
     public Navigation loadMenu() {
         System.out.println("Enter the following selections to continue.");
         System.out.println(" 1. Deposit\n 2. Withdrawal \n 3. Transfer \n 4. View Accounts \n 5. Repay Loan \n 6. Create Account \n 7. History \n 8. Profile \n 9. Logout \n 10. Quit");
@@ -147,9 +170,8 @@ public class CustomerMenu {
         }
     }
     public boolean accountCreationFlow(AccountType type) {
-
-
         BigDecimal initAmount = BigDecimal.ZERO;
+
         switch(type) {
             case SAVINGS:
                 System.out.println("Enter a minimum balance for you savings:");

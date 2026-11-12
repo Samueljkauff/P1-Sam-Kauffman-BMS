@@ -43,7 +43,7 @@ public class App
         LoginMenu loginMenu = new LoginMenu(input, authService);
         CustomerMenu customerMenu = new CustomerMenu(input, authService, accountService, transactionService);
 
-        MainMenu menu = new MainMenu(session, customerMenu, loginMenu);
+        MainMenu menu = new MainMenu(session, customerMenu, loginMenu, accountService);
 
         menu.loadMenu();
 

@@ -284,7 +284,7 @@ public class CustomerMenu {
                 goBack();
             }
             for(Account account: accounts) {
-                System.out.println("| " + count + " | " + account.getAccountNumber() + " | " + account.getAccountType() + " | " + account.getBalance() + " |");
+                System.out.println("| " + count + " | #" + account.getAccountNumber() + " | " + account.getAccountType() + " | $" + account.getBalance() + " | " + account.getStatus() + " |");
 
                 count++;
             }
@@ -331,14 +331,26 @@ public class CustomerMenu {
             System.out.println(e);
         }
 
-        String prompt = "Pick which loan you want to repay!";
-        Account account = chooseAccount(prompt, false, true);
-
         if(accounts.isEmpty()) {
+            System.out.println("You do not have active loans.");
             goBack();
-        } else {
-            // repay loan logic
-        }
+            return;
+        } 
+        String prompt = "Pick which loan you want to repay:";
+        Account loan = chooseAccount(prompt, false, true);
+
+        prompt = "which account would you like to transfer from?";
+        Account fromAccount = chooseAccount(prompt, false, false);
+
+        System.out.println("How much would you like to pay off?");
+        BigDecimal amount = input.readDecimal();
+            try{
+                transactionService.repayLoan(fromAccount, loan, amount);
+            } catch(SQLException e) {
+                System.out.println("Something went wrong." + e);
+            } catch(IllegalArgumentException e) {
+                System.out.println("Insuffecient funds");
+            }
     }
 
     public void profileFlow() {

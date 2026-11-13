@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 import com.sam.bank.enums.AccountType;
+import com.sam.bank.enums.AccountStatus;
 
 public class Account {
     private long accountId;
@@ -57,5 +58,13 @@ public class Account {
     public long getAccountId() {
         System.out.println(this.accountId);
         return this.accountId;
+    }
+
+    public void setStatus(AccountStatus status) {
+        this.status = status;
+    }
+
+    public AccountStatus getStatus() {
+        return this.status;
     }
 }       

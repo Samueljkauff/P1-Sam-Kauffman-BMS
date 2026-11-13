@@ -3,30 +3,35 @@ package com.sam.bank.app;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sam.bank.enums.AccountType;
 import com.sam.bank.enums.Navigation;
 import com.sam.bank.service.AccountService;
 import com.sam.bank.service.AuthService;
+import com.sam.bank.service.CustomerService;
 import com.sam.bank.service.TransactionService;
 import com.sam.bank.model.Account;
+import com.sam.bank.model.Customer;
 
 public class CustomerMenu {
     private ConsoleInput input;
     private AuthService authService;
     private AccountService accountService;
     private TransactionService transactionService;
+    private CustomerService customerService;
 
-    public CustomerMenu(ConsoleInput input, AuthService authService, AccountService accountService, TransactionService transactionService) {
+    public CustomerMenu(ConsoleInput input, AuthService authService, AccountService accountService, TransactionService transactionService, CustomerService customerService) {
         this.input = input;
         this.authService = authService;
         this.accountService = accountService;
         this.transactionService = transactionService;
+        this.customerService = customerService;
     }
 
     public Navigation loadInitMenu() {
-        System.out.println("Create your first account today!.");
+        System.out.println("Create your first account today!");
         System.out.println("1. Current \n2. Savings \n3. Quit");
 
         int choice = input.readInt();
@@ -78,7 +83,7 @@ public class CustomerMenu {
                 loadMenu();
                 return Navigation.CONTINUE;
             case 5:
-
+                repayLoanFlow();
                 return Navigation.CONTINUE;
             case 6:
                 AccountType type = accountChoice();
@@ -91,7 +96,7 @@ public class CustomerMenu {
 
                 return Navigation.CONTINUE;
             case 8:
-
+                profileFlow();
                 return Navigation.CONTINUE;
             case 9:
                 logout();
@@ -108,7 +113,7 @@ public class CustomerMenu {
 
     public void depositFlow() {
         String prompt = "Which account would you like to deposit to?";
-        Account account = chooseAccount(prompt);
+        Account account = chooseAccount(prompt, false, false);
 
         System.out.println("How much would you like to deposit?");
         BigDecimal depositAmount = input.readDecimal();
@@ -117,12 +122,14 @@ public class CustomerMenu {
         } catch(SQLException e) {
             System.out.println("Soemthing went wrong: " + e);
             loadMenu();
+        } catch(IllegalArgumentException e) {
+            System.out.println("Cannot deposit $0! Please try again with a valid amount.");
         }
     }
 
     public void withdrawalFlow() {
         String prompt = "Which account would you like to withdrawal from?";
-        Account account = chooseAccount(prompt);
+        Account account = chooseAccount(prompt, false, false);
 
         System.out.println("How much would you like to withdrawal?");
         BigDecimal withdrawalAmount = input.readDecimal();
@@ -130,12 +137,31 @@ public class CustomerMenu {
             transactionService.withdrawal(account, withdrawalAmount);
         } catch(SQLException e) {
             System.out.println("Something went wrong: " + e);
+        } catch(IllegalArgumentException e) {
+            System.out.println("insufficient Funds! Please try again with a valid amount.");
         }
+
+        loadMenu();
 
     }
 
     public void transferFlow() {
+        String prompt = "Which account would you like to transfer to?";
+        Account toAccount = chooseAccount(prompt, false, false);
 
+        prompt = "which account would you like to transfer from?";
+        Account fromAccount = chooseAccount(prompt, false, false);
+
+        System.out.println("How much money would you like to transfer?");
+        BigDecimal transferAmount = input.readDecimal();
+
+        try {
+            transactionService.transfer(fromAccount, toAccount, transferAmount);
+        } catch(SQLException e) {
+            System.out.println("ERROR: Something went wrong! Please try again");
+        } catch(IllegalArgumentException e) {
+            System.out.println("ERROR: Insuffecient Funds. Pleaser Try again witha. valid amount.");
+        }
     }
 
     private void logout() {
@@ -199,9 +225,9 @@ public class CustomerMenu {
             case DEPOSIT:
                 int termMonths = maturityMonths();
                 LocalDate maturityDate = LocalDate.now().plusMonths(termMonths);
-                initAmount = initialDeposit();
                 String prompt = "Choose an account to fund your deposit";
-                Account fundingAccount = chooseAccount(prompt);
+                Account fundingAccount = chooseAccount(prompt, false, false);
+                initAmount = initialDeposit();
                 try {
                     accountService.depositCreation(initAmount, termMonths, maturityDate, fundingAccount);
                     System.out.println("Account successfully created!");
@@ -255,7 +281,7 @@ public class CustomerMenu {
             System.out.println("--------------- Accounts ---------------");
             if (accounts.isEmpty()) {
                 System.out.println("You have no accounts.");
-                loadMenu();
+                goBack();
             }
             for(Account account: accounts) {
                 System.out.println("| " + count + " | " + account.getAccountNumber() + " | " + account.getAccountType() + " | " + account.getBalance() + " |");
@@ -271,14 +297,14 @@ public class CustomerMenu {
         }
     }
 
-    public Account chooseAccount(String prompt) {
+    public Account chooseAccount(String prompt, boolean includeDeposit, boolean isLoan) {
         int choice;
-        List<Account> accounts = listAccounts(false, false);
+        List<Account> accounts = listAccounts(includeDeposit, isLoan);
             
             if(accounts.size() > 1) {
                 System.out.println(prompt + " 1-" + accounts.size() + "\n");
             } else {
-                System.out.println(prompt + "/n");
+                System.out.println(prompt + "\n");
             }
 
             while (true) {
@@ -294,5 +320,44 @@ public class CustomerMenu {
 
             Account selectedAccount = accounts.get( choice-1);
             return selectedAccount;
+    }
+
+    public void repayLoanFlow() {
+        List<Account> accounts = new ArrayList<>();
+
+        try {
+            accounts = accountService.getAllAccounts(false, true);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
+        String prompt = "Pick which loan you want to repay!";
+        Account account = chooseAccount(prompt, false, true);
+
+        if(accounts.isEmpty()) {
+            goBack();
+        } else {
+            // repay loan logic
+        }
+    }
+
+    public void profileFlow() {
+        Customer customer = authService.getCurrentCustomer();
+
+        System.out.println("\nEmail: " + customer.getEmail());
+        System.out.println("Username: " + customer.getUsername());
+        System.out.println("Full Name: " + customer.getFullName());
+        System.out.println("Phone Number: " + customer.getPhone());
+
+        // CHANGE PASSWORD CHOICE
+        goBack();
+    }
+
+    public void goBack() {
+        System.out.println("\nEnter q to go back.");
+        String choice = input.readString();
+        if(choice.equals("q")) {
+            loadMenu();
+        }
     }
 }

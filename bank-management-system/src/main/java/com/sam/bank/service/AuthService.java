@@ -45,4 +45,8 @@ public class AuthService {
     public void logout() {
         this.sessionManager.setCurrentSession(null);
     }
+
+    public Customer getCurrentCustomer() {
+        return sessionManager.getCurrentCustomer();
+    }
 }

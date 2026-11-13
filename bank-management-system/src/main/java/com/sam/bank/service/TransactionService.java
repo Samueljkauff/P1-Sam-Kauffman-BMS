@@ -44,7 +44,7 @@ public class TransactionService {
 
         BigDecimal newBalance = account.getBalance().subtract(amount);
 
-        if(newBalance.compareTo(BigDecimal.ZERO) < 1) {
+        if(newBalance.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("insufficient Funds.");
         }
         
@@ -54,7 +54,32 @@ public class TransactionService {
         });
     }
 
-    public void transfer(long fromAcount, long toAccount, BigDecimal amount) {
+    public void transfer(Account fromAccount, Account toAccount, BigDecimal amount) throws SQLException {
+        long fromAccountId = fromAccount.getAccountId();
+        long toAccountId = toAccount.getAccountId();
+
+        BigDecimal fromAccountNewBalance = fromAccount.getBalance().subtract(amount);
+        BigDecimal toAccountNewBalance = toAccount.getBalance().add(amount);
+
+        if(fromAccountNewBalance.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("insufficient Funds.");
+        }
+
+        if(amount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("You cannot transfer $0.");
+        }
+
+        if(toAccount.getAccountId() == fromAccount.getAccountId()) {
+            throw new IllegalArgumentException("You cannot transfer to the same account.");
+        }
+
+        jdbcTransaction.execute(connection -> {
+            accountDAO.updateBalance(connection, toAccountId, toAccountNewBalance);
+            accountDAO.updateBalance(connection, fromAccountId, fromAccountNewBalance);
+            System.out.println("Transfer Successful!");
+            System.out.println("#" + fromAccount.getAccountNumber() + " new balance: " + fromAccountNewBalance);
+            System.out.println("#" + toAccount.getAccountNumber() + " new balance: " + toAccountNewBalance);
+        });
 
     }
 }

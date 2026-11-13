@@ -77,7 +77,7 @@ public class LoginMenu {
         while(!isValidPhone){
             String errorMessage = error == 0 ? "" : "\nERROR: PHONE NUMBERS MUST BE 10 VALID DIGITS";
             System.out.println(errorMessage);
-            System.out.print("Phone number: ");
+            System.out.print("Phone number (10 digits): ");
             phone = input.readString();
             isValidPhone = AccountValidator.verifyPhone(phone);
             error = 1;

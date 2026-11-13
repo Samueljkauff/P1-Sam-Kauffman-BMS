@@ -1,13 +1,17 @@
 package com.sam.bank.service;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import com.sam.bank.dao.AccountDAO;
 import com.sam.bank.dao.TransactionDAO;
 import com.sam.bank.model.Account;
+import com.sam.bank.model.Transaction;
 import com.sam.bank.enums.AccountStatus;
-import com.sam.bank.enums.AccountType;
+import com.sam.bank.enums.TransactionStatus;
+import com.sam.bank.enums.TransactionType;
 import com.sam.bank.util.JdbcTransaction;
 
 public class TransactionService {
@@ -30,9 +34,24 @@ public class TransactionService {
 
         BigDecimal newBalance = account.getBalance().add(amount);
 
+        Transaction transaction = new Transaction(
+            0,
+            java.util.UUID.randomUUID().toString(),
+            null,
+            accountId,
+            TransactionType.DEPOSIT,
+            amount,
+            TransactionStatus.SUCCESS,
+            "Loan repayment",
+            null,
+            newBalance,
+            null
+        );
+
         jdbcTransaction.execute(connection -> {
             accountDAO.updateBalance(connection, accountId, newBalance);
-            System.out.println("Successfully updated amount of account: #" + account.getAccountNumber() + " to " + newBalance);
+            transactionDAO.createTransaction(connection, transaction);
+            System.out.println("Successfully updated amount of account: #" + account.getAccountNumber() + " to $" + newBalance);
         });
     }
 
@@ -49,10 +68,25 @@ public class TransactionService {
         if(newBalance.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("insufficient Funds.");
         }
+
+        Transaction transaction = new Transaction(
+            0,
+            java.util.UUID.randomUUID().toString(),
+            accountId,
+            null,
+            TransactionType.WITHDRAWAL,
+            amount,
+            TransactionStatus.SUCCESS,
+            "Loan repayment",
+            newBalance,
+            null,
+            null
+        );
         
         jdbcTransaction.execute(connection -> {
             accountDAO.updateBalance(connection, accountId, newBalance);
-            System.out.println("Successfully updated amount of account: #" + account.getAccountNumber() + " to " + newBalance);
+            transactionDAO.createTransaction(connection, transaction);
+            System.out.println("Successfully updated amount of account: #" + account.getAccountNumber() + " to $" + newBalance);
         });
     }
 
@@ -75,12 +109,27 @@ public class TransactionService {
             throw new IllegalArgumentException("You cannot transfer to the same account.");
         }
 
+        Transaction transaction = new Transaction(
+            0,
+            java.util.UUID.randomUUID().toString(),
+            fromAccountId,
+            toAccountId,
+            TransactionType.TRANSFER,
+            amount,
+            TransactionStatus.SUCCESS,
+            "Loan repayment",
+            fromAccountNewBalance,
+            toAccountNewBalance,
+            null
+            );
+
         jdbcTransaction.execute(connection -> {
             accountDAO.updateBalance(connection, toAccountId, toAccountNewBalance);
             accountDAO.updateBalance(connection, fromAccountId, fromAccountNewBalance);
+            transactionDAO.createTransaction(connection, transaction);
             System.out.println("Transfer Successful!");
-            System.out.println("#" + fromAccount.getAccountNumber() + " new balance: " + fromAccountNewBalance);
-            System.out.println("#" + toAccount.getAccountNumber() + " new balance: " + toAccountNewBalance);
+            System.out.println("#" + fromAccount.getAccountNumber() + " new balance: $" + fromAccountNewBalance);
+            System.out.println("#" + toAccount.getAccountNumber() + " new balance: $" + toAccountNewBalance);
         });
     }
 
@@ -102,6 +151,19 @@ public class TransactionService {
         if(loanAccountNewBalance.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("You cannot transfer to the same account.");
         }
+            Transaction transaction = new Transaction(
+            0,
+            java.util.UUID.randomUUID().toString(),
+            fromAccountId,
+            loanAccountId,
+            TransactionType.LOAN_REPAYMENT,
+            amount,
+            TransactionStatus.SUCCESS,
+            "Loan repayment",
+            fromAccountNewBalance,
+            loanAccountNewBalance,
+            null
+            );
 
         jdbcTransaction.execute(connection -> {
             accountDAO.updateBalance(connection, loanAccountId, loanAccountNewBalance);
@@ -109,6 +171,10 @@ public class TransactionService {
                 if (loanAccountNewBalance.compareTo(BigDecimal.ZERO) == 0) {
                     accountDAO.updateStatus(connection, loanAccountId, AccountStatus.CLOSED);
                 }
+            
+            transactionDAO.createTransaction(connection, transaction);
+            System.out.println("Loan payment went through. Remaining balance: $" + loanAccountNewBalance);
+            System.out.println("#" + fromAccount.getAccountNumber() + " new balance: $" + fromAccountNewBalance);
         });
     }
 }

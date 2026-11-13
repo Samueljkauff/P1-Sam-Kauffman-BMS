@@ -48,7 +48,6 @@ public class CustomerMenu {
                 return Navigation.QUIT;
             default:
                 System.out.println("Invalid Choice!!! Input must be a number 1-3.\n");
-                loadInitMenu();
                 return Navigation.CONTINUE;
         }
     }
@@ -74,13 +73,10 @@ public class CustomerMenu {
                 return Navigation.CONTINUE;
             case 4:
                 String isDone;
-                do {
-                    listAccounts(true, false);
-                    System.out.println("\nEnter q to go back");
-                    isDone = input.readString();
-                } while(!isDone.equals("q"));
+                listAccounts(true, false);
+                System.out.println("\nPress enter to go back.");
+                input.readString();
 
-                loadMenu();
                 return Navigation.CONTINUE;
             case 5:
                 repayLoanFlow();
@@ -106,7 +102,6 @@ public class CustomerMenu {
                 return Navigation.QUIT;
             default:
                 System.out.println("Invalid Choice!!! Input must be a number 1-10.\n");
-                loadMenu();
                 return Navigation.CONTINUE;
         }
     }
@@ -121,7 +116,6 @@ public class CustomerMenu {
             transactionService.deposit(account, depositAmount);
         } catch(SQLException e) {
             System.out.println("Soemthing went wrong: " + e);
-            loadMenu();
         } catch(IllegalArgumentException e) {
             System.out.println("Cannot deposit $0! Please try again with a valid amount.");
         }
@@ -140,8 +134,6 @@ public class CustomerMenu {
         } catch(IllegalArgumentException e) {
             System.out.println("insufficient Funds! Please try again with a valid amount.");
         }
-
-        loadMenu();
 
     }
 
@@ -281,7 +273,10 @@ public class CustomerMenu {
             System.out.println("--------------- Accounts ---------------");
             if (accounts.isEmpty()) {
                 System.out.println("You have no accounts.");
-                goBack();
+                System.out.println("You do not have active loans. Enter to go back.");
+                input.readString();
+
+                return null;
             }
             for(Account account: accounts) {
                 System.out.println("| " + count + " | #" + account.getAccountNumber() + " | " + account.getAccountType() + " | $" + account.getBalance() + " | " + account.getStatus() + " |");
@@ -292,7 +287,6 @@ public class CustomerMenu {
             return accounts;
         } catch (SQLException e) {
         System.out.println("Unable to retrieve accounts.");
-        loadMenu();
         return null;
         }
     }
@@ -329,11 +323,13 @@ public class CustomerMenu {
             accounts = accountService.getAllAccounts(false, true);
         } catch (SQLException e) {
             System.out.println(e);
+            return;
         }
 
         if(accounts.isEmpty()) {
-            System.out.println("You do not have active loans.");
-            goBack();
+            System.out.println("You do not have active loans. Enter to go back.");
+            input.readString();
+
             return;
         } 
         String prompt = "Pick which loan you want to repay:";
@@ -362,14 +358,9 @@ public class CustomerMenu {
         System.out.println("Phone Number: " + customer.getPhone());
 
         // CHANGE PASSWORD CHOICE
-        goBack();
-    }
+        System.out.println("\nPress enter to go back.");
+        input.readString();
 
-    public void goBack() {
-        System.out.println("\nEnter q to go back.");
-        String choice = input.readString();
-        if(choice.equals("q")) {
-            loadMenu();
-        }
+        return;
     }
 }

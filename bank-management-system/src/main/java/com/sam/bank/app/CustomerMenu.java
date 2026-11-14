@@ -14,6 +14,7 @@ import com.sam.bank.service.CustomerService;
 import com.sam.bank.service.TransactionService;
 import com.sam.bank.model.Account;
 import com.sam.bank.model.Customer;
+import com.sam.bank.model.Transaction;
 
 public class CustomerMenu {
     private ConsoleInput input;
@@ -89,7 +90,7 @@ public class CustomerMenu {
                 accountCreationFlow(type);
                 return Navigation.CONTINUE;
             case 7:
-
+                historyFlow();
                 return Navigation.CONTINUE;
             case 8:
                 profileFlow();
@@ -362,5 +363,10 @@ public class CustomerMenu {
         input.readString();
 
         return;
+    }
+
+    public void historyFlow() {
+        long customerId = authService.getCurrentCustomer().getId();
+        List<Transaction> transactions = transactionService.getHistory(customerId);
     }
 }

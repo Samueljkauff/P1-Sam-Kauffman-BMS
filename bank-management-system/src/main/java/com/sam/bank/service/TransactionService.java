@@ -1,9 +1,8 @@
 package com.sam.bank.service;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.sam.bank.dao.AccountDAO;
 import com.sam.bank.dao.TransactionDAO;
@@ -42,7 +41,7 @@ public class TransactionService {
             TransactionType.DEPOSIT,
             amount,
             TransactionStatus.SUCCESS,
-            "Loan repayment",
+            "Deposit",
             null,
             newBalance,
             null
@@ -77,7 +76,7 @@ public class TransactionService {
             TransactionType.WITHDRAWAL,
             amount,
             TransactionStatus.SUCCESS,
-            "Loan repayment",
+            "Withdrawal",
             newBalance,
             null,
             null
@@ -117,7 +116,7 @@ public class TransactionService {
             TransactionType.TRANSFER,
             amount,
             TransactionStatus.SUCCESS,
-            "Loan repayment",
+            "Transfer",
             fromAccountNewBalance,
             toAccountNewBalance,
             null
@@ -176,5 +175,10 @@ public class TransactionService {
             System.out.println("Loan payment went through. Remaining balance: $" + loanAccountNewBalance);
             System.out.println("#" + fromAccount.getAccountNumber() + " new balance: $" + fromAccountNewBalance);
         });
+    }
+
+    public ArrayList<Transaction> getHistory(long customerId) {
+        ArrayList<Transaction> transactions = transactionDAO.getHistory(customerId);
+        return transactions;
     }
 }

@@ -8,9 +8,9 @@ import com.sam.bank.security.PasswordHasher;
 import com.sam.bank.security.SessionManager;
 
 public class AuthService {
-    public CustomerDAO customerDAO;
-    public PasswordHasher passwordHasher;
-    public SessionManager sessionManager;
+    private final CustomerDAO customerDAO;
+    private PasswordHasher passwordHasher;
+    private SessionManager sessionManager;
 
     public AuthService(CustomerDAO customerDAO, PasswordHasher passwordHasher, SessionManager sessionManager) {
         this.customerDAO = customerDAO;

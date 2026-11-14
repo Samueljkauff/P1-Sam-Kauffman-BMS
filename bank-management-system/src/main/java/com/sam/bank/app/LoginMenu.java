@@ -91,8 +91,6 @@ public class LoginMenu {
         String verifyPassword = "";
         error = 0;
         while(!isValidPassword) {
-            String errorMessage = error == 0 ? "\n" : "\nERROR: PASSWORDS DONT MATCH";
-            System.out.println(errorMessage);
             System.out.print("Password: ");
             password = input.readPassword();
             System.out.print("\nVerify password: ");

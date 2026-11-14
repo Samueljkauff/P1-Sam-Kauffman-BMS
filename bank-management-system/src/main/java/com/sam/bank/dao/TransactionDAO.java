@@ -3,6 +3,7 @@ package com.sam.bank.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.sam.bank.model.Transaction;
 
@@ -35,5 +36,11 @@ public class TransactionDAO {
 
             statement.executeUpdate();
         }
+    }
+
+    public ArrayList<Transaction> getHistory(long customerId) {
+        String sql = "SELECT source_account_id, destination_account_id, amount, status, description, source_balance_after, destination_balance_after FROM transactions WHERE ";
+        // finish this
+        return new ArrayList<>();
     }
 }

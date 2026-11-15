@@ -383,7 +383,6 @@ public class CustomerMenu {
 
                 System.out.print("\nVerify new password: ");
                 String verifyPassword = input.readPassword();
-                System.out.println(newPassword + " " + verifyPassword);
                 isValidPassword = AccountValidator.verifyPasswordValid(newPassword, verifyPassword);
             }
 

@@ -1,6 +1,7 @@
 package com.sam.bank.model;
 
 import java.time.Instant;
+import com.sam.bank.enums.CustomerStatus;
 
 public class Customer {
     private long customerId;

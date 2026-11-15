@@ -177,7 +177,7 @@ public class TransactionService {
         });
     }
 
-    public ArrayList<Transaction> getHistory(long customerId) {
+    public ArrayList<Transaction> getHistory(long customerId) throws SQLException {
         ArrayList<Transaction> transactions = transactionDAO.getHistory(customerId);
         return transactions;
     }

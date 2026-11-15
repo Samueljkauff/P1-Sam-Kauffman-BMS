@@ -35,7 +35,7 @@ public class App
         AccountDAO accountDAO = new AccountDAO(connection);
         LoanDAO loanDAO = new LoanDAO();
         DepositDAO depositDAO = new DepositDAO();
-        TransactionDAO transactionDAO = new TransactionDAO();
+        TransactionDAO transactionDAO = new TransactionDAO(connection);
 
         AuthService authService = new AuthService(customerDAO, passwordHasher, session);
         AccountService accountService = new AccountService(accountDAO, loanDAO, depositDAO, session, transaction);

@@ -24,7 +24,7 @@ public class AuthService {
             sessionManager.setCurrentSession(customer);
             return true;
         } else {
-            System.out.println("Psssword Incorrect");
+            System.out.println("Credentials Incorrect.");
             return false;
         }
     }

@@ -271,7 +271,8 @@ public class CustomerMenu {
         int count = 1;
         try {
             List<Account> accounts = accountService.getAllAccounts(includeDeposit, isLoan);
-            System.out.println("--------------- Accounts ---------------");
+            System.out.println("=================== Accounts ====================");
+            System.out.println("-------------------------------------------------");
             if (accounts.isEmpty()) {
                 System.out.println("You have no accounts.");
                 System.out.println("You do not have active loans. Enter to go back.");
@@ -284,6 +285,7 @@ public class CustomerMenu {
 
                 count++;
             }
+            System.out.println("=================================================");
 
             return accounts;
         } catch (SQLException e) {
@@ -395,6 +397,52 @@ public class CustomerMenu {
 
     public void historyFlow() {
         long customerId = authService.getCurrentCustomer().getId();
+try {
         List<Transaction> transactions = transactionService.getHistory(customerId);
+
+        if (transactions.isEmpty()) {
+            System.out.println("\nNo transaction history found.");
+            return;
+        }
+
+        System.out.println("\n========== TRANSACTION HISTORY ==========");
+
+            for (Transaction transaction : transactions) {
+                System.out.println("\n------------------------------------------");
+                System.out.println("Reference: " + transaction.getReferenceNumber());
+                System.out.println("Date: " + transaction.getCreatedAt());
+                System.out.println("Type: " + transaction.getTransactionType());
+                System.out.println("Amount: $" + transaction.getAmount());
+                System.out.println("Status: " + transaction.getStatus());
+                System.out.println("Description: " + transaction.getDescription());
+
+                System.out.println("From Account: " +
+                    (transaction.getSourceAccountId() == null
+                        ? "N/A"
+                        : transaction.getSourceAccountId()));
+
+                System.out.println("To Account: " +
+                    (transaction.getDestinationAccountId() == null
+                        ? "N/A"
+                        : transaction.getDestinationAccountId()));
+
+                System.out.println("Source Balance After: " +
+                    (transaction.getSourceBalanceAfter() == null
+                        ? "N/A"
+                        : "$" + transaction.getSourceBalanceAfter()));
+
+                System.out.println("Destination Balance After: " +
+                    (transaction.getDestBalanceAfter() == null
+                        ? "N/A"
+                        : "$" + transaction.getDestBalanceAfter()));
+            }
+
+            System.out.println("\n==========================================");
+            System.out.println("Press enter to go back.");
+            input.readString();
+
+        } catch (SQLException e) {
+            System.out.println("Unable to retrieve transaction history: " + e.getMessage());
+        }
     }
 }

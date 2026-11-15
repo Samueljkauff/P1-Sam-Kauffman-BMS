@@ -43,13 +43,13 @@ public class LoginMenu {
     }
 
     private void login() {
-        System.out.println("\nLOGIN \n");
-        System.out.println("Enter each field accordingly. \n");
+        System.out.println("\nLOGIN");
+        System.out.print("Enter each field accordingly. \n");
 
-        System.out.print("\nEmail: ");
+        System.out.print("Email: ");
         String email = input.readString();
 
-        System.out.print("\nPassword: ");
+        System.out.print("Password: ");
         String password = input.readPassword();
         try {
             authService.loginCredentials(email, password);

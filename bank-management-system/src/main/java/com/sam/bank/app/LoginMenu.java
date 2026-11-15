@@ -43,7 +43,7 @@ public class LoginMenu {
     }
 
     private void login() {
-        System.out.println("Login \n");
+        System.out.println("\nLOGIN \n");
         System.out.println("Enter each field accordingly. \n");
 
         System.out.print("\nEmail: ");
@@ -89,14 +89,13 @@ public class LoginMenu {
         boolean isValidPassword = false;
         String password = "";
         String verifyPassword = "";
-        error = 0;
+        
         while(!isValidPassword) {
             System.out.print("Password: ");
             password = input.readPassword();
             System.out.print("\nVerify password: ");
             verifyPassword = input.readPassword();
             isValidPassword = AccountValidator.verifyPasswordValid(password, verifyPassword);
-            error = 1;
         }
 
         try {

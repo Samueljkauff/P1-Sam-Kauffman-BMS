@@ -40,7 +40,7 @@ public class App
         AuthService authService = new AuthService(customerDAO, passwordHasher, session);
         AccountService accountService = new AccountService(accountDAO, loanDAO, depositDAO, session, transaction);
         TransactionService transactionService = new TransactionService(transactionDAO, accountDAO, transaction);
-        CustomerService customerService = new CustomerService(customerDAO);
+        CustomerService customerService = new CustomerService(customerDAO, passwordHasher);
 
         LoginMenu loginMenu = new LoginMenu(input, authService);
         CustomerMenu customerMenu = new CustomerMenu(input, authService, accountService, transactionService, customerService);

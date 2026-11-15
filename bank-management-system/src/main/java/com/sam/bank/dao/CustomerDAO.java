@@ -1,11 +1,12 @@
 package com.sam.bank.dao;
 
-import com.sam.bank.model.Customer;
-import com.sam.bank.util.ConnectionFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import com.sam.bank.model.Customer;
+import com.sam.bank.util.ConnectionFactory;
 
 public class CustomerDAO {
     private ConnectionFactory connectionFactory;
@@ -58,5 +59,16 @@ public class CustomerDAO {
                 customer.setID(result.getLong("customer_id"));
                 
                 return customer;
+    }
+
+    public void changePassword(long customerId, String password) throws SQLException {
+        String sql = "UPDATE customers SET password_hash = ? WHERE customer_id = ?";
+
+        try(Connection connection = connectionFactory.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, password);
+            statement.setLong(2, customerId);
+
+            statement.executeUpdate();
+        }
     }
 }

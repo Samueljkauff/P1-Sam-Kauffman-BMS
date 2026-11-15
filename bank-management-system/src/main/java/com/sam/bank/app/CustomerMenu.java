@@ -12,6 +12,7 @@ import com.sam.bank.service.AccountService;
 import com.sam.bank.service.AuthService;
 import com.sam.bank.service.CustomerService;
 import com.sam.bank.service.TransactionService;
+import com.sam.bank.validation.AccountValidator;
 import com.sam.bank.model.Account;
 import com.sam.bank.model.Customer;
 import com.sam.bank.model.Transaction;
@@ -73,7 +74,6 @@ public class CustomerMenu {
                 transferFlow();
                 return Navigation.CONTINUE;
             case 4:
-                String isDone;
                 listAccounts(true, false);
                 System.out.println("\nPress enter to go back.");
                 input.readString();
@@ -358,10 +358,39 @@ public class CustomerMenu {
         System.out.println("Full Name: " + customer.getFullName());
         System.out.println("Phone Number: " + customer.getPhone());
 
-        // CHANGE PASSWORD CHOICE
-        System.out.println("\nPress enter to go back.");
-        input.readString();
+        System.out.println("\nPress enter to go back. Type enter 'change' to change your password.");
+        String choice = input.readString();
 
+        if(choice.toLowerCase().trim().equals("change")) {
+            long customerId = authService.getCurrentCustomer().getId();
+
+            boolean isOldPassword = false;
+            while(!isOldPassword) {
+                System.out.print("Enter your old Password: ");
+                String oldPassword = input.readPassword();
+                try {
+                    isOldPassword = authService.loginCredentials(authService.getCurrentCustomer().getEmail(), oldPassword);
+                } catch(SQLException e) {
+                    System.out.println("Database error. " + e);
+                }  
+            }
+
+            boolean isValidPassword = false;
+            String newPassword = "";
+            while(!isValidPassword) {
+                System.out.print("Enter new password: ");
+                newPassword = input.readPassword();
+
+                System.out.print("\nVerify new password: ");
+                String verifyPassword = input.readPassword();
+                System.out.println(newPassword + " " + verifyPassword);
+                isValidPassword = AccountValidator.verifyPasswordValid(newPassword, verifyPassword);
+            }
+
+            if(isValidPassword) {
+                customerService.changePassword(customerId, newPassword);
+            }
+        }
         return;
     }
 

@@ -9,7 +9,10 @@ public class AppConfig {
     private String password;
 
     public AppConfig() {
-        this.dotenv = Dotenv.load();
+        this.dotenv = Dotenv.configure()
+            .directory(".")
+            .filename(".env")
+            .load();
         this.URL = retrieveURL();
         this.username = retrieveUsername();
         this.password = retrievePassword();

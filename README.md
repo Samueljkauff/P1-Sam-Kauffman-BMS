@@ -216,10 +216,6 @@ DB_PASSWORD=YOUR_PASSWORD
 
 Replace the placeholders with your PostgreSQL credentials.
 
-**Important:** Never commit your `.env` file. It should be excluded through `.gitignore`.
-
-You can use `.env.example` to document the required environment variables without exposing credentials.
-
 ### 4. Initialize the Database
 
 Execute the project's database schema script against the `bank_management` database.
